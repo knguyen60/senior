@@ -88,7 +88,7 @@ DATABASES = {
         # 'HOST': 'localhost',
         # 'PORT': '3306',
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'piCam',
+        'NAME': 'picam',
         'USER': 'cornjob',
         'PASSWORD': 'pipipipi',
         'HOST': 'sketchflow.cp1gdmsejpup.us-east-1.rds.amazonaws.com',
@@ -143,22 +143,22 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-REST_FRAMEWORK = {
-    'DEFAULT_RENDERER_CLASSES': (
-        'rest_framework.renderers.JSONRenderer',
-        'rest_framework.renderers.BrowsableAPIRenderer',
-
-    ),
-   
-    'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework.authentication.SessionAuthentication',
-        'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
-
-    ),
-
-    'DEFAULT_PERMISSION_CLASSES': (
-       'rest_framework.permissions.AllowAny',
-
-       #'rest_framework.permissions.IsAuthenticated',
-    ),
-}
+# REST_FRAMEWORK = {
+#     'DEFAULT_RENDERER_CLASSES': (
+#         'rest_framework.renderers.JSONRenderer',
+#         'rest_framework.renderers.BrowsableAPIRenderer',
+#
+#     ),
+#
+#     'DEFAULT_AUTHENTICATION_CLASSES': (
+#         'rest_framework.authentication.SessionAuthentication',
+#         'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
+#
+#     ),
+#
+#     'DEFAULT_PERMISSION_CLASSES': (
+#        'rest_framework.permissions.AllowAny',
+#
+#        #'rest_framework.permissions.IsAuthenticated',
+#     ),
+# }

@@ -13,3 +13,6 @@ urlpatterns = [
     url(r'^auth/token/', obtain_jwt_token),
 
 ]
+# urlpatterns =[
+    
+# ]

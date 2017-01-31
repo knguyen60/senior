@@ -25,7 +25,7 @@ class UserCreateSerializer(ModelSerializer):
             'email',
             #'email2', 
             'password',
-            'role',
+            # 'role',
             ]
         extra_kwargs = {"password": {"write_only": True}}
         #write_only = 'password'
@@ -43,11 +43,11 @@ class UserCreateSerializer(ModelSerializer):
         email = validated_data['email']
         username = validated_data['username']
         password = validated_data['password']
-        role = validated_data['role']
+        # role = validated_data['role']
         user_obj = User(
                 email = email,
                 username = username,
-                role = role,
+               # role = role,
                # password_hash=password_hash
             )
         user_obj.set_password(password)

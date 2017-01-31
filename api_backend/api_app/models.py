@@ -173,6 +173,8 @@ class UserManager(BaseUserManager):
     def create_superuser(self, email, username, password, **extra_fields):
         extra_fields.setdefault('is_superuser', True)
         extra_fields.setdefault('is_admin', True)
+        extra_fields.setdefault('is_active', True)
+
 
         if extra_fields.get('is_superuser') is not True:
             raise ValueError('Superuser must have is_superuser=True.')
@@ -192,11 +194,12 @@ class User(AbstractBaseUser):
     api_key = models.CharField(max_length=32)
     goodle_token = models.CharField(max_length=255, blank=True)
     dropbox_token = models.CharField(max_length=255, blank=True)
-    role = models.ForeignKey(Role, models.DO_NOTHING, db_column='role', default='1')
+    # role = models.ForeignKey('Role', models.DO_NOTHING, db_column='role', default='1')
     is_confirmed = models.IntegerField(blank=True, null=True)
     created_at = models.DateTimeField()
     first_name = models.CharField(max_length=30, null=True, blank=True)
     last_name = models.CharField(max_length=30, null=True, blank=True)
+    is_viewer = models.BooleanField(default=False, verbose_name='account is viewer')
     is_active = models.BooleanField(default=False, verbose_name='account is activated')
     is_admin = models.BooleanField(default=False, verbose_name='staff account')
     is_superuser = models.IntegerField(default=False)
@@ -233,8 +236,8 @@ class User(AbstractBaseUser):
 
 
 class Viewer(models.Model):
-    master = models.ForeignKey(User, models.DO_NOTHING, related_name='master')
-    viewer = models.ForeignKey(User, models.DO_NOTHING, related_name='viewer')
+    master = models.ForeignKey('User', models.DO_NOTHING, related_name='master')
+    viewer = models.ForeignKey('User', models.DO_NOTHING, related_name='viewer')
     permission = models.ForeignKey(Permission, models.DO_NOTHING, db_column='permission')
 
     class Meta:
