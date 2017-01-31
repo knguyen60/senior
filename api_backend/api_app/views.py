@@ -45,7 +45,7 @@ class UserLogin(APIView):
         if serializer.is_valid(raise_exception=True):
             new_data= serializer.data
             return Response(new_data, status=HTTP_200_OK)
-        return  Response(serializer._errors, status=HTTP_400_BAD_REQUEST)
+        return Response(serializer._errors, status=HTTP_400_BAD_REQUEST)
             
 class UserProfile(generics.RetrieveUpdateAPIView):
     permission_classes= [AllowAny]
@@ -53,7 +53,7 @@ class UserProfile(generics.RetrieveUpdateAPIView):
     serializer_class = UserProfileSerializer
 
 
-class CameraList(generics.ListCreateAPIView):
+class CameraList(generics.CreateAPIView):
     queryset = Camera.objects.all()
     serializer_class = CameraSerializer
 

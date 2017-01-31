@@ -82,7 +82,8 @@ class Camera(models.Model):
     name = models.CharField(max_length=50)
     address = models.CharField(max_length=250)
     uid = models.ForeignKey('User', models.DO_NOTHING, db_column='uid', blank=True, null=True)
-    created_at = models.DateTimeField(blank=True, null=True)
+    created_at = models.DateTimeField()
+    is_active = models.BooleanField(default=True, verbose_name='camera is activated')
 
     class Meta:
         managed = True

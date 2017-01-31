@@ -63,15 +63,16 @@ class UserLoginSerializer(ModelSerializer):
 
     username = CharField(required=False, allow_blank=True)
     email = EmailField(label= 'Email Address', required=False, allow_blank=True)
-    first_name = CharField(read_only=True, allow_blank=True)
+    full_name = CharField(read_only=True, allow_blank=True)
 
     class Meta:
         model = User
         fields = [
+            'id'
             'email', 
             'username', 
             'password',
-            'first_name',
+            'full_name',
             'token',
             'dropbox_token',
         ]
@@ -100,7 +101,7 @@ class UserLoginSerializer(ModelSerializer):
                 raise ValidationError("Incorrect credential")
 
         data["token"] = "Some token"
-        data["first_name"] = user_obj.get_full_name()
+        data["full_name"] = user_obj.get_full_name()
         data["dropbox_token"] = user_obj.dropbox_token
         return data
 
