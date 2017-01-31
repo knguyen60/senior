@@ -59,8 +59,11 @@ class UserCreateSerializer(ModelSerializer):
 
 class UserLoginSerializer(ModelSerializer):
     token = CharField(allow_blank=True, read_only=True)
+    dropbox_token = CharField(allow_blank=True, read_only=True)
+
     username = CharField(required=False, allow_blank=True)
     email = EmailField(label= 'Email Address', required=False, allow_blank=True)
+    first_name = CharField(read_only=True, allow_blank=True)
 
     class Meta:
         model = User
@@ -68,8 +71,10 @@ class UserLoginSerializer(ModelSerializer):
             'email', 
             'username', 
             'password',
-            'token', 
-            ]
+            'first_name',
+            'token',
+            'dropbox_token',
+        ]
         extra_kwargs = {"password": {"write_only": True}}
 
     def validate(self, data):
@@ -95,7 +100,23 @@ class UserLoginSerializer(ModelSerializer):
                 raise ValidationError("Incorrect credential")
 
         data["token"] = "Some token"
+        data["first_name"] = user_obj.get_full_name()
+        data["dropbox_token"] = user_obj.dropbox_token
         return data
+
+
+class UserProfileSerializer(ModelSerializer):
+  class Meta:
+        model = User
+        fields = [
+            'first_name', 
+            'last_name',  
+            ]
+  def update(self, instance, validated_data):
+        instance.first_name = validated_data.get('first_name', instance.first_name)
+        instance.last_name = validated_data.get('last_name',instance.last_name)
+        instance.save()
+        return instance
 
 
 class CameraSerializer(ModelSerializer):

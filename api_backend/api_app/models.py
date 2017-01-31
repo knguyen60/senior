@@ -210,7 +210,7 @@ class User(AbstractBaseUser):
     
     def get_full_name(self):
         full_name = '%s %s' % (self.first_name, self.last_name)
-        return fullname.strip()
+        return full_name.strip()
 
     def get_short_name(self):
         return self.first_name

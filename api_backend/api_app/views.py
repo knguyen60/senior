@@ -13,6 +13,7 @@ from .models import User, Role, Camera
 from .serializers import (
     UserCreateSerializer, 
     UserLoginSerializer,
+    UserProfileSerializer,
     RoleSerializer, 
     CameraSerializer, 
     ViewerSerializer)
@@ -46,7 +47,10 @@ class UserLogin(APIView):
             return Response(new_data, status=HTTP_200_OK)
         return  Response(serializer._errors, status=HTTP_400_BAD_REQUEST)
             
-
+class UserProfile(generics.RetrieveUpdateAPIView):
+    permission_classes= [AllowAny]
+    queryset = User.objects.all()
+    serializer_class = UserProfileSerializer
 
 
 class CameraList(generics.ListCreateAPIView):
