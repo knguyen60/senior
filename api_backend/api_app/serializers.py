@@ -8,6 +8,8 @@ from rest_framework.serializers import (
     ValidationError,
 )
 from .models import User, Viewer, Role, Camera
+from datetime import datetime
+from rest_framework_jwt.settings import api_settings
 
 #User= get_user_model()
 
@@ -15,7 +17,7 @@ from .models import User, Viewer, Role, Camera
 
 #register user
 class UserCreateSerializer(ModelSerializer):
-    email = EmailField(label = 'Email Address')
+    #email = EmailField(label = 'Email Address')
     #email2 = EmailField(label='Confirm Email')
 
     class Meta:
@@ -59,8 +61,7 @@ class UserCreateSerializer(ModelSerializer):
 
 class UserLoginSerializer(ModelSerializer):
     token = CharField(allow_blank=True, read_only=True)
-    dropbox_token = CharField(allow_blank=True, read_only=True)
-
+    #dropbox_token = CharField(allow_blank=True, read_only=True)
     username = CharField(required=False, allow_blank=True)
     email = EmailField(label= 'Email Address', required=False, allow_blank=True)
     full_name = CharField(read_only=True, allow_blank=True)
@@ -68,7 +69,7 @@ class UserLoginSerializer(ModelSerializer):
     class Meta:
         model = User
         fields = [
-            'id'
+            'id',
             'email', 
             'username', 
             'password',
@@ -77,6 +78,7 @@ class UserLoginSerializer(ModelSerializer):
             'dropbox_token',
         ]
         extra_kwargs = {"password": {"write_only": True}}
+        read_only_fields = ('dropbox_token',)
 
     def validate(self, data):
         user_obj = None
@@ -100,7 +102,22 @@ class UserLoginSerializer(ModelSerializer):
             if not user_obj.check_password(password):
                 raise ValidationError("Incorrect credential")
 
-        data["token"] = "Some token"
+        # payload = {
+        #         'id': user_obj.pk,
+        #         'username': user_obj.username,
+        #         'staff': user_obj.is_staff,
+        #         'exp': datetime.utcnow() 
+        #     }
+        # token = {'token': jwt.encode(payload, SECRET)}
+        jwt_payload_handler = api_settings.JWT_PAYLOAD_HANDLER
+        jwt_encode_handler = api_settings.JWT_ENCODE_HANDLER
+        payload = jwt_payload_handler(user_obj)
+
+        if api_settings.JWT_ALLOW_REFRESH:
+            payload['orig_iat'] = timegm(datetime.utcnow().utctimetuple())
+
+        data["id"] = user_obj.id        
+        data["token"] = jwt_encode_handler(payload)
         data["full_name"] = user_obj.get_full_name()
         data["dropbox_token"] = user_obj.dropbox_token
         return data
@@ -113,17 +130,23 @@ class UserProfileSerializer(ModelSerializer):
             'first_name', 
             'last_name',  
             ]
-  def update(self, instance, validated_data):
-        instance.first_name = validated_data.get('first_name', instance.first_name)
-        instance.last_name = validated_data.get('last_name',instance.last_name)
-        instance.save()
-        return instance
+        def update(self, instance, validated_data):
+            instance.first_name = validated_data.get('first_name', instance.first_name)
+            instance.last_name = validated_data.get('last_name',instance.last_name)
+            instance.save()
+            return instance
 
 
 class CameraSerializer(ModelSerializer):
+    
     class Meta:
         model= Camera
         fields='__all__'
+
+        read_only_fields = ("created_at","is_active")
+
+        def get_camera_by_user (self, request, arg):
+            camera = Camera.objects.filter(Q(uid= arg))
 
 
 class ViewerSerializer(ModelSerializer):

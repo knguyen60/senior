@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'rest_framework_jwt',
     'api_app.apps.ApiAppConfig',
 
 ]
@@ -151,15 +152,15 @@ REST_FRAMEWORK = {
     ),
 
     'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework.authentication.SessionAuthentication',
+        #'rest_framework.authentication.SessionAuthentication',
         'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
 
     ),
 
     'DEFAULT_PERMISSION_CLASSES': (
        'rest_framework.permissions.AllowAny',
-
-       #'rest_framework.permissions.IsAuthenticated',
+       'rest_framework.permissions.IsAuthenticated',
+       'rest_framework.permissions.IsAuthenticatedOrReadOnly',
     ),
 
     'TEST_REQUEST_DEFAULT_FORMAT': 'json'
