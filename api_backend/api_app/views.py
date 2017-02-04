@@ -55,12 +55,12 @@ class UserProfile(generics.RetrieveUpdateAPIView):
 
 class CameraList(generics.ListCreateAPIView):
     permission_classes= [AllowAny]
-    queryset = Camera.objects.all()
+    queryset = Camera.objects.filter(uid=29).order_by('-created_at').exclude(cid=1)
     serializer_class = CameraSerializer
 
-class CameraDetail(generics.RetrieveUpdateDestroyAPIView):
+class CameraDetail(generics.ListAPIView):
     permission_classes= [AllowAny]
-    queryset = Camera.objects.all()
+    queryset = Camera.objects.filter(uid=29)
     serializer_class = CameraSerializer
 
 

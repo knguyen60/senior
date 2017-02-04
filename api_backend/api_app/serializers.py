@@ -106,7 +106,7 @@ class UserLoginSerializer(ModelSerializer):
         #         'id': user_obj.pk,
         #         'username': user_obj.username,
         #         'staff': user_obj.is_staff,
-        #         'exp': datetime.utcnow() 
+        #         'exp': datetime.utcnow() + api_settings.JWT_EXPIRATION_DELTA,
         #     }
         # token = {'token': jwt.encode(payload, SECRET)}
         jwt_payload_handler = api_settings.JWT_PAYLOAD_HANDLER
@@ -116,7 +116,8 @@ class UserLoginSerializer(ModelSerializer):
         if api_settings.JWT_ALLOW_REFRESH:
             payload['orig_iat'] = timegm(datetime.utcnow().utctimetuple())
 
-        data["id"] = user_obj.id        
+        data["id"] = user_obj.id
+        data["email"] = user_obj.email
         data["token"] = jwt_encode_handler(payload)
         data["full_name"] = user_obj.get_full_name()
         data["dropbox_token"] = user_obj.dropbox_token
